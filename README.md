@@ -262,6 +262,26 @@ Define custom profiles in `config/db-export.php`:
 ],
 ```
 
+### Preserve Admin/Developer Accounts
+
+Skip anonymization for rows where specific columns match certain email domains:
+
+```php
+// config/db-export.php
+'preserve_rows' => [
+    'users' => [
+        'column' => 'email',
+        'domains' => ['xve.be', 'company.com'],
+    ],
+    'customers' => [
+        'column' => 'contact_email',
+        'domains' => ['xve.be'],
+    ],
+],
+```
+
+Users with `@xve.be` or `@company.com` emails will keep their original data while all other users are anonymized. Each table can specify which column to check.
+
 ## Production Usage
 
 ### Minimal Impact

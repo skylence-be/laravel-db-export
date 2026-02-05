@@ -9,8 +9,13 @@ class AnonymizationConfig
     /**
      * @param  array<string, array<string, array<string, mixed>>>  $rules
      * @param  array<string, array<string, mixed>>  $globalRules
+     * @param  array<string, array{column: string, domains: array<int, string>}>  $preserveRows
      */
-    public function __construct(protected array $rules = [], protected array $globalRules = []) {}
+    public function __construct(
+        protected array $rules = [],
+        protected array $globalRules = [],
+        protected array $preserveRows = []
+    ) {}
 
     public function hasRulesForTable(string $table): bool
     {
@@ -89,22 +94,74 @@ class AnonymizationConfig
     }
 
     /**
-     * @return array{tables: array<string, array<string, array<string, mixed>>>, global: array<string, array<string, mixed>>}
+     * Check if a row should be preserved (not anonymized) based on domain.
+     *
+     * @param  array<string, mixed>  $row
+     */
+    public function shouldPreserveRow(string $table, array $row): bool
+    {
+        if (! isset($this->preserveRows[$table])) {
+            return false;
+        }
+
+        $config = $this->preserveRows[$table];
+        $column = $config['column'] ?? 'email';
+        $domains = $config['domains'] ?? [];
+
+        if ($domains === []) {
+            return false;
+        }
+
+        if (! isset($row[$column])) {
+            return false;
+        }
+
+        $value = $row[$column];
+        if (! is_string($value) || ! str_contains($value, '@')) {
+            return false;
+        }
+
+        $domain = strtolower(substr($value, (int) strrpos($value, '@') + 1));
+
+        foreach ($domains as $preserveDomain) {
+            if (strtolower($preserveDomain) === $domain) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * @return array<string, array{column: string, domains: array<int, string>}>
+     */
+    public function getPreserveRows(): array
+    {
+        return $this->preserveRows;
+    }
+
+    /**
+     * @return array{tables: array<string, array<string, array<string, mixed>>>, global: array<string, array<string, mixed>>, preserve_rows: array<string, array{column: string, domains: array<int, string>}>}
      */
     public function toArray(): array
     {
         return [
             'tables' => $this->rules,
             'global' => $this->globalRules,
+            'preserve_rows' => $this->preserveRows,
         ];
     }
 
     /**
      * @param  array<string, array<string, array<string, mixed>>>  $profileAnonymize
      * @param  array<string, array<string, mixed>>  $globalAnonymize
+     * @param  array<string, array{column: string, domains: array<int, string>}>  $preserveRows
      */
-    public static function fromConfig(array $profileAnonymize, array $globalAnonymize = []): self
-    {
-        return new self($profileAnonymize, $globalAnonymize);
+    public static function fromConfig(
+        array $profileAnonymize,
+        array $globalAnonymize = [],
+        array $preserveRows = []
+    ): self {
+        return new self($profileAnonymize, $globalAnonymize, $preserveRows);
     }
 }

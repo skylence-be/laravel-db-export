@@ -16,10 +16,12 @@ class LoadAnonymizationRulesAction
     {
         /** @var array<string, array<string, mixed>> $globalRules */
         $globalRules = config('db-export.global_anonymization', []);
+        /** @var array<string, array{column: string, domains: array<int, string>}> $preserveRows */
+        $preserveRows = config('db-export.preserve_rows', []);
 
         $profileRules = $exportConfig->anonymize;
 
-        return AnonymizationConfig::fromConfig($profileRules, $globalRules);
+        return AnonymizationConfig::fromConfig($profileRules, $globalRules, $preserveRows);
     }
 
     /**
@@ -36,8 +38,10 @@ class LoadAnonymizationRulesAction
         $globalRules = config('db-export.global_anonymization', []);
         /** @var array<string, array<string, array<string, mixed>>> $profileAnonymize */
         $profileAnonymize = $profile['anonymize'] ?? [];
+        /** @var array<string, array{column: string, domains: array<int, string>}> $preserveRows */
+        $preserveRows = config('db-export.preserve_rows', []);
 
-        return AnonymizationConfig::fromConfig($profileAnonymize, $globalRules);
+        return AnonymizationConfig::fromConfig($profileAnonymize, $globalRules, $preserveRows);
     }
 
     /**
@@ -49,6 +53,8 @@ class LoadAnonymizationRulesAction
         $mergedTables = [];
         /** @var array<string, array<string, mixed>> $mergedGlobal */
         $mergedGlobal = [];
+        /** @var array<string, array{column: string, domains: array<int, string>}> $mergedPreserveRows */
+        $mergedPreserveRows = [];
 
         foreach ($configs as $config) {
             $data = $config->toArray();
@@ -66,9 +72,23 @@ class LoadAnonymizationRulesAction
             /** @var array<string, array<string, mixed>> $global */
             $global = $data['global'];
             $mergedGlobal = array_merge($mergedGlobal, $global);
+
+            // Merge preserve rows from all configs
+            /** @var array<string, array{column: string, domains: array<int, string>}> $preserveRows */
+            $preserveRows = $data['preserve_rows'] ?? [];
+            foreach ($preserveRows as $table => $tableConfig) {
+                if (! isset($mergedPreserveRows[$table])) {
+                    $mergedPreserveRows[$table] = $tableConfig;
+                } else {
+                    // Merge domains for same table
+                    $mergedPreserveRows[$table]['domains'] = array_values(array_unique(
+                        array_merge($mergedPreserveRows[$table]['domains'], $tableConfig['domains'])
+                    ));
+                }
+            }
         }
 
-        return new AnonymizationConfig($mergedTables, $mergedGlobal);
+        return new AnonymizationConfig($mergedTables, $mergedGlobal, $mergedPreserveRows);
     }
 
     /**
