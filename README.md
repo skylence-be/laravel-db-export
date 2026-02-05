@@ -15,7 +15,7 @@ A Laravel package for database exports with profile-based exclusions, anonymizat
 ## Installation
 
 ```bash
-composer require dwb/laravel-db-export
+composer require xve/laravel-db-export
 ```
 
 Publish the configuration:
