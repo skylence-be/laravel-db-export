@@ -30,7 +30,7 @@ jobs:
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
         with:
-          php-version: '8.3'
+          php-version: '8.4'
           extensions: dom, curl, libxml, mbstring, zip, pcntl, pdo, sqlite, pdo_sqlite, bcmath, soap, intl, gd, exif, iconv, fileinfo
           coverage: none
 
@@ -57,7 +57,7 @@ jobs:
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
         with:
-          php-version: '8.3'
+          php-version: '8.4'
           coverage: none
 
       - name: Download vendor
@@ -85,7 +85,7 @@ jobs:
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
         with:
-          php-version: '8.3'
+          php-version: '8.4'
           coverage: none
 
       - name: Download vendor
@@ -98,7 +98,7 @@ jobs:
         run: chmod +x vendor/bin/*
 
       - name: Run Pint
-        run: ./vendor/bin/pint --test
+        run: ./vendor/bin/pint --test --parallel
 
   phpstan:
     name: PHPStan
@@ -113,7 +113,7 @@ jobs:
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
         with:
-          php-version: '8.3'
+          php-version: '8.4'
           coverage: none
 
       - name: Install dependencies
@@ -130,7 +130,7 @@ jobs:
         run: vendor/bin/phpstan --error-format=github --memory-limit=1G
 
   tests:
-    name: P${{ matrix.php }} - L${{ matrix.laravel }} - ${{ matrix.stability }}
+    name: P${{ matrix.php }} - L${{ matrix.laravel }} - ${{ matrix.stability }} (${{ matrix.shard }}/3)
     runs-on: ubuntu-latest
     timeout-minutes: 10
     needs: [rector, pint, phpstan]
@@ -140,7 +140,8 @@ jobs:
       matrix:
         php: ['8.4', '8.3', '8.2']
         laravel: ['10.*', '11.*', '12.*']
-        stability: [prefer-stable]
+        stability: [prefer-lowest, prefer-stable]
+        shard: [1, 2, 3]
         include:
           - laravel: '10.*'
             testbench: ^8.0
@@ -151,6 +152,9 @@ jobs:
         exclude:
           - php: '8.2'
             laravel: '12.*'
+          # Early testbench 10.x has PHPUnit ErrorHandler incompatibility
+          - laravel: '12.*'
+            stability: prefer-lowest
 
     steps:
       - name: Checkout code
@@ -178,7 +182,7 @@ jobs:
         run: composer show -D
 
       - name: Execute tests
-        run: vendor/bin/pest --ci --parallel
+        run: vendor/bin/pest --ci --parallel --shard=${{ matrix.shard }}/3
 
   summary:
     name: Summary
@@ -196,7 +200,7 @@ jobs:
           echo "- Rector: Passed" >> $GITHUB_STEP_SUMMARY
           echo "- Pint: Passed" >> $GITHUB_STEP_SUMMARY
           echo "- PHPStan: Passed" >> $GITHUB_STEP_SUMMARY
-          echo "- Tests: Passed" >> $GITHUB_STEP_SUMMARY
+          echo "- Tests: All shards passed" >> $GITHUB_STEP_SUMMARY
 
       - name: Some checks failed
         if: ${{ needs.rector.result != 'success' || needs.pint.result != 'success' || needs.phpstan.result != 'success' || needs.tests.result != 'success' }}
