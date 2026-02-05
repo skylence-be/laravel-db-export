@@ -338,6 +338,10 @@ Files are named: `{database}_{date}_{time}.sql.gz`
 
 Example: `my_app_2024-01-15_143052.sql.gz`
 
+## See Also
+
+- [Package Comparison](docs/comparison.md) - SWOT analysis vs other Laravel backup packages
+
 ## License
 
 MIT
