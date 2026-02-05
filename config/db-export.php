@@ -21,8 +21,8 @@ return [
     |
     */
     'compression' => [
-        'enabled' => true,
-        'level' => 6, // 1-9, higher = more compression but slower
+        'enabled' => env('DB_EXPORT_COMPRESSION', true),
+        'level' => env('DB_EXPORT_COMPRESSION_LEVEL', 6), // 1-9, higher = more compression but slower
     ],
 
     /*
@@ -85,7 +85,7 @@ return [
     |
     */
     'disk_check' => [
-        'enabled' => true,
+        'enabled' => env('DB_EXPORT_DISK_CHECK', true),
         'safety_margin' => 1.5, // Require 1.5x estimated size as free space
         'minimum_free_mb' => 100,
     ],
@@ -99,8 +99,8 @@ return [
     |
     */
     'cleanup' => [
-        'enabled' => true,
-        'keep_recent' => 0, // Number of recent exports to keep (0 = delete all)
+        'enabled' => env('DB_EXPORT_CLEANUP', true),
+        'keep_recent' => env('DB_EXPORT_KEEP_RECENT', 0), // Number of recent exports to keep (0 = delete all)
     ],
 
     /*
@@ -273,5 +273,5 @@ return [
     | The database connection to use for exports. Null uses the default.
     |
     */
-    'connection' => null,
+    'connection' => env('DB_EXPORT_CONNECTION'),
 ];
