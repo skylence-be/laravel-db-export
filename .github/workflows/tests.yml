@@ -140,7 +140,7 @@ jobs:
       matrix:
         php: ['8.4', '8.3', '8.2']
         laravel: ['10.*', '11.*', '12.*']
-        stability: [prefer-lowest, prefer-stable]
+        stability: [prefer-stable]
         shard: [1, 2, 3]
         include:
           - laravel: '10.*'
@@ -152,9 +152,6 @@ jobs:
         exclude:
           - php: '8.2'
             laravel: '12.*'
-          # Early testbench 10.x has PHPUnit ErrorHandler incompatibility
-          - laravel: '12.*'
-            stability: prefer-lowest
 
     steps:
       - name: Checkout code
