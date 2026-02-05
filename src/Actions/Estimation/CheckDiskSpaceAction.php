@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace Dwb\DbExport\Actions\Estimation;
+namespace Xve\DbExport\Actions\Estimation;
 
-use Dwb\DbExport\Contracts\DiskCheckerInterface;
-use Dwb\DbExport\DTOs\DiskSpaceResult;
+use Xve\DbExport\Contracts\DiskCheckerInterface;
+use Xve\DbExport\DTOs\DiskSpaceResult;
 
 class CheckDiskSpaceAction implements DiskCheckerInterface
 {

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Dwb\DbExport\Exceptions;
+namespace Xve\DbExport\Exceptions;
 
 use Exception;
 use Throwable;

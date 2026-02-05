@@ -2,13 +2,13 @@
 
 declare(strict_types=1);
 
-namespace Dwb\DbExport\Actions\Export;
+namespace Xve\DbExport\Actions\Export;
 
-use Dwb\DbExport\Config\ExportConfig;
-use Dwb\DbExport\Contracts\ExporterInterface;
-use Dwb\DbExport\DTOs\ExportResult;
-use Dwb\DbExport\DTOs\TableInfo;
-use Dwb\DbExport\Exceptions\ExportException;
+use Xve\DbExport\Config\ExportConfig;
+use Xve\DbExport\Contracts\ExporterInterface;
+use Xve\DbExport\DTOs\ExportResult;
+use Xve\DbExport\DTOs\TableInfo;
+use Xve\DbExport\Exceptions\ExportException;
 
 class ExecuteExportAction implements ExporterInterface
 {
@@ -96,7 +96,7 @@ class ExecuteExportAction implements ExporterInterface
         }
 
         // Export anonymized tables via PHP
-        if ($anonymizedTables !== [] && $this->exportAnonymized !== null) {
+        if ($anonymizedTables !== [] && $this->exportAnonymized instanceof \Xve\DbExport\Actions\Export\ExportAnonymizedTableAction) {
             $handle = fopen($outputPath, 'a');
             if ($handle !== false) {
                 fwrite($handle, "\n-- Anonymized tables\n");

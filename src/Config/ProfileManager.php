@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Dwb\DbExport\Config;
+namespace Xve\DbExport\Config;
 
-use Dwb\DbExport\Exceptions\InvalidProfileException;
+use Xve\DbExport\Exceptions\InvalidProfileException;
 
 class ProfileManager
 {

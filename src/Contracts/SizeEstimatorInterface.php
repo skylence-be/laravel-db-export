@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace Dwb\DbExport\Contracts;
+namespace Xve\DbExport\Contracts;
 
-use Dwb\DbExport\DTOs\SizeEstimate;
-use Dwb\DbExport\DTOs\TableInfo;
+use Xve\DbExport\DTOs\SizeEstimate;
+use Xve\DbExport\DTOs\TableInfo;
 
 interface SizeEstimatorInterface
 {

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Dwb\DbExport\Contracts;
+namespace Xve\DbExport\Contracts;
 
 interface AnonymizationStrategyInterface
 {

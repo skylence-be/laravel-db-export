@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace Dwb\DbExport\Actions\Anonymization;
+namespace Xve\DbExport\Actions\Anonymization;
 
-use Dwb\DbExport\Config\AnonymizationConfig;
-use Dwb\DbExport\Config\ExportConfig;
+use Xve\DbExport\Config\AnonymizationConfig;
+use Xve\DbExport\Config\ExportConfig;
 
 class LoadAnonymizationRulesAction
 {

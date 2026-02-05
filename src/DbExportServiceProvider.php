@@ -2,20 +2,20 @@
 
 declare(strict_types=1);
 
-namespace Dwb\DbExport;
+namespace Xve\DbExport;
 
-use Dwb\DbExport\Commands\EstimateCommand;
-use Dwb\DbExport\Commands\ExportCommand;
-use Dwb\DbExport\Commands\ListProfilesCommand;
-use Dwb\DbExport\Commands\SetupCommand;
-use Dwb\DbExport\Config\ProfileManager;
-use Dwb\DbExport\Contracts\AnonymizerInterface;
-use Dwb\DbExport\Contracts\DiskCheckerInterface;
-use Dwb\DbExport\Contracts\ExporterInterface;
-use Dwb\DbExport\Contracts\SizeEstimatorInterface;
-use Dwb\DbExport\Contracts\TableResolverInterface;
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Support\ServiceProvider;
+use Xve\DbExport\Commands\EstimateCommand;
+use Xve\DbExport\Commands\ExportCommand;
+use Xve\DbExport\Commands\ListProfilesCommand;
+use Xve\DbExport\Commands\SetupCommand;
+use Xve\DbExport\Config\ProfileManager;
+use Xve\DbExport\Contracts\AnonymizerInterface;
+use Xve\DbExport\Contracts\DiskCheckerInterface;
+use Xve\DbExport\Contracts\ExporterInterface;
+use Xve\DbExport\Contracts\SizeEstimatorInterface;
+use Xve\DbExport\Contracts\TableResolverInterface;
 
 class DbExportServiceProvider extends ServiceProvider
 {

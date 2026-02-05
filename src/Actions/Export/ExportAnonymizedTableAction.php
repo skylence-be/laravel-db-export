@@ -2,13 +2,13 @@
 
 declare(strict_types=1);
 
-namespace Dwb\DbExport\Actions\Export;
+namespace Xve\DbExport\Actions\Export;
 
-use Dwb\DbExport\Actions\Anonymization\AnonymizeTableAction;
-use Dwb\DbExport\Actions\Anonymization\LoadAnonymizationRulesAction;
-use Dwb\DbExport\Config\ExportConfig;
 use Illuminate\Database\ConnectionInterface;
 use Illuminate\Support\Facades\DB;
+use Xve\DbExport\Actions\Anonymization\AnonymizeTableAction;
+use Xve\DbExport\Actions\Anonymization\LoadAnonymizationRulesAction;
+use Xve\DbExport\Config\ExportConfig;
 
 class ExportAnonymizedTableAction
 {
@@ -97,7 +97,7 @@ class ExportAnonymizedTableAction
 
         $valueStrings = [];
         foreach ($rows as $row) {
-            $values = array_map([$this, 'escapeValue'], $row);
+            $values = array_map($this->escapeValue(...), $row);
             $valueStrings[] = '('.implode(', ', $values).')';
         }
 

@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Dwb\DbExport\Actions\Anonymization\Strategies;
+namespace Xve\DbExport\Actions\Anonymization\Strategies;
 
-use Dwb\DbExport\Contracts\AnonymizationStrategyInterface;
+use Xve\DbExport\Contracts\AnonymizationStrategyInterface;
 
 class NullStrategy implements AnonymizationStrategyInterface
 {

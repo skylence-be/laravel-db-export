@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace Dwb\DbExport\Commands;
+namespace Xve\DbExport\Commands;
 
-use Dwb\DbExport\Config\ProfileManager;
 use Illuminate\Console\Command;
+use Xve\DbExport\Config\ProfileManager;
 
 class ListProfilesCommand extends Command
 {

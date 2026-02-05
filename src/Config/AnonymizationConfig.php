@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Dwb\DbExport\Config;
+namespace Xve\DbExport\Config;
 
 class AnonymizationConfig
 {

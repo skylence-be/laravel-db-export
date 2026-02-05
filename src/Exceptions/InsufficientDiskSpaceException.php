@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace Dwb\DbExport\Exceptions;
+namespace Xve\DbExport\Exceptions;
 
-use Dwb\DbExport\DTOs\DiskSpaceResult;
 use Exception;
+use Xve\DbExport\DTOs\DiskSpaceResult;
 
 class InsufficientDiskSpaceException extends Exception
 {

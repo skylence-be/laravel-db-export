@@ -2,13 +2,13 @@
 
 declare(strict_types=1);
 
-namespace Dwb\DbExport\Commands;
+namespace Xve\DbExport\Commands;
 
-use Dwb\DbExport\Config\ExportConfig;
-use Dwb\DbExport\DbExportManager;
-use Dwb\DbExport\Exceptions\ExportException;
-use Dwb\DbExport\Exceptions\InsufficientDiskSpaceException;
 use Illuminate\Console\Command;
+use Xve\DbExport\Config\ExportConfig;
+use Xve\DbExport\DbExportManager;
+use Xve\DbExport\Exceptions\ExportException;
+use Xve\DbExport\Exceptions\InsufficientDiskSpaceException;
 
 class ExportCommand extends Command
 {

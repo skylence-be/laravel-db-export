@@ -2,8 +2,8 @@
 
 declare(strict_types=1);
 
-use Dwb\DbExport\Config\ProfileManager;
-use Dwb\DbExport\Exceptions\InvalidProfileException;
+use Xve\DbExport\Config\ProfileManager;
+use Xve\DbExport\Exceptions\InvalidProfileException;
 
 beforeEach(function (): void {
     $this->profiles = [

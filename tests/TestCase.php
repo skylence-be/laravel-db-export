@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace Dwb\DbExport\Tests;
+namespace Xve\DbExport\Tests;
 
-use Dwb\DbExport\DbExportServiceProvider;
 use Orchestra\Testbench\TestCase as Orchestra;
+use Xve\DbExport\DbExportServiceProvider;
 
 abstract class TestCase extends Orchestra
 {
@@ -24,7 +24,7 @@ abstract class TestCase extends Orchestra
     protected function getPackageAliases($app): array
     {
         return [
-            'DbExport' => \Dwb\DbExport\Facades\DbExport::class,
+            'DbExport' => \Xve\DbExport\Facades\DbExport::class,
         ];
     }
 

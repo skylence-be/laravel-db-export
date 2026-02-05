@@ -2,21 +2,21 @@
 
 declare(strict_types=1);
 
-namespace Dwb\DbExport;
+namespace Xve\DbExport;
 
-use Dwb\DbExport\Actions\Estimation\GenerateBreakdownAction;
-use Dwb\DbExport\Config\ExportConfig;
-use Dwb\DbExport\Config\ProfileManager;
-use Dwb\DbExport\Contracts\DiskCheckerInterface;
-use Dwb\DbExport\Contracts\ExporterInterface;
-use Dwb\DbExport\Contracts\SizeEstimatorInterface;
-use Dwb\DbExport\Contracts\TableResolverInterface;
-use Dwb\DbExport\DTOs\ExportResult;
-use Dwb\DbExport\DTOs\SizeEstimate;
-use Dwb\DbExport\DTOs\TableInfo;
-use Dwb\DbExport\Exceptions\InsufficientDiskSpaceException;
-use Dwb\DbExport\Exceptions\InvalidProfileException;
 use Illuminate\Contracts\Foundation\Application;
+use Xve\DbExport\Actions\Estimation\GenerateBreakdownAction;
+use Xve\DbExport\Config\ExportConfig;
+use Xve\DbExport\Config\ProfileManager;
+use Xve\DbExport\Contracts\DiskCheckerInterface;
+use Xve\DbExport\Contracts\ExporterInterface;
+use Xve\DbExport\Contracts\SizeEstimatorInterface;
+use Xve\DbExport\Contracts\TableResolverInterface;
+use Xve\DbExport\DTOs\ExportResult;
+use Xve\DbExport\DTOs\SizeEstimate;
+use Xve\DbExport\DTOs\TableInfo;
+use Xve\DbExport\Exceptions\InsufficientDiskSpaceException;
+use Xve\DbExport\Exceptions\InvalidProfileException;
 
 class DbExportManager
 {
@@ -183,7 +183,7 @@ class DbExportManager
      */
     protected function prepareConfig(?ExportConfig $config): ExportConfig
     {
-        if (! $config instanceof \Dwb\DbExport\Config\ExportConfig) {
+        if (! $config instanceof \Xve\DbExport\Config\ExportConfig) {
             $config = new ExportConfig(
                 connection: $this->connection,
                 profile: $this->profile

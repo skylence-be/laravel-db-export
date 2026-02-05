@@ -2,17 +2,17 @@
 
 declare(strict_types=1);
 
-namespace Dwb\DbExport\Actions\Anonymization;
+namespace Xve\DbExport\Actions\Anonymization;
 
-use Dwb\DbExport\Actions\Anonymization\Strategies\FakerStrategy;
-use Dwb\DbExport\Actions\Anonymization\Strategies\FixedStrategy;
-use Dwb\DbExport\Actions\Anonymization\Strategies\HashStrategy;
-use Dwb\DbExport\Actions\Anonymization\Strategies\MaskStrategy;
-use Dwb\DbExport\Actions\Anonymization\Strategies\NullStrategy;
-use Dwb\DbExport\Config\AnonymizationConfig;
-use Dwb\DbExport\Contracts\AnonymizationStrategyInterface;
-use Dwb\DbExport\Contracts\AnonymizerInterface;
-use Dwb\DbExport\Exceptions\AnonymizationException;
+use Xve\DbExport\Actions\Anonymization\Strategies\FakerStrategy;
+use Xve\DbExport\Actions\Anonymization\Strategies\FixedStrategy;
+use Xve\DbExport\Actions\Anonymization\Strategies\HashStrategy;
+use Xve\DbExport\Actions\Anonymization\Strategies\MaskStrategy;
+use Xve\DbExport\Actions\Anonymization\Strategies\NullStrategy;
+use Xve\DbExport\Config\AnonymizationConfig;
+use Xve\DbExport\Contracts\AnonymizationStrategyInterface;
+use Xve\DbExport\Contracts\AnonymizerInterface;
+use Xve\DbExport\Exceptions\AnonymizationException;
 
 class AnonymizeTableAction implements AnonymizerInterface
 {
@@ -84,7 +84,7 @@ class AnonymizeTableAction implements AnonymizerInterface
     protected function anonymizeRow(string $table, array $row, array $rules, ?AnonymizationConfig $config = null): array
     {
         // Check if this specific row should be preserved (e.g., admin emails)
-        if ($config !== null && $config->shouldPreserveRow($table, $row)) {
+        if ($config instanceof \Xve\DbExport\Config\AnonymizationConfig && $config->shouldPreserveRow($table, $row)) {
             return $row;
         }
 

@@ -1,5 +1,5 @@
 <?php
 
-use Dwb\DbExport\Tests\TestCase;
+use Xve\DbExport\Tests\TestCase;
 
 uses(TestCase::class)->in('Feature', 'Unit');

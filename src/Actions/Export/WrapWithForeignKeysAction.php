@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Dwb\DbExport\Actions\Export;
+namespace Xve\DbExport\Actions\Export;
 
-use Dwb\DbExport\Exceptions\ExportException;
+use Xve\DbExport\Exceptions\ExportException;
 
 class WrapWithForeignKeysAction
 {
@@ -45,6 +45,7 @@ class WrapWithForeignKeysAction
         if ($sourceHandle === false) {
             fclose($tempHandle);
             unlink($tempPath);
+
             throw ExportException::fileNotReadable($filePath);
         }
 
@@ -58,6 +59,7 @@ class WrapWithForeignKeysAction
         // Replace original with wrapped version
         if (! rename($tempPath, $filePath)) {
             unlink($tempPath);
+
             throw ExportException::fileNotWritable($filePath);
         }
     }

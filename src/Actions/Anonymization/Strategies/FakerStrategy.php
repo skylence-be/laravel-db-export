@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace Dwb\DbExport\Actions\Anonymization\Strategies;
+namespace Xve\DbExport\Actions\Anonymization\Strategies;
 
-use Dwb\DbExport\Contracts\AnonymizationStrategyInterface;
-use Dwb\DbExport\Exceptions\AnonymizationException;
+use Xve\DbExport\Contracts\AnonymizationStrategyInterface;
+use Xve\DbExport\Exceptions\AnonymizationException;
 
 class FakerStrategy implements AnonymizationStrategyInterface
 {
@@ -54,22 +54,22 @@ class FakerStrategy implements AnonymizationStrategyInterface
      */
     protected function fallbackAnonymize(string $method, mixed $originalValue): mixed
     {
-        $id = substr(md5((string) $originalValue . random_bytes(8)), 0, 8);
+        $id = substr(md5($originalValue.random_bytes(8)), 0, 8);
 
         return match ($method) {
-            'name', 'firstName', 'lastName' => 'User_' . $id,
-            'email', 'safeEmail', 'freeEmail', 'companyEmail' => 'user_' . $id . '@example.com',
-            'phoneNumber', 'phone', 'e164PhoneNumber' => '+1' . rand(1000000000, 9999999999),
-            'address', 'streetAddress' => $id . ' Example Street',
-            'city' => 'City_' . $id,
-            'postcode', 'zipCode' => (string) rand(10000, 99999),
-            'country' => 'Country_' . $id,
-            'company', 'companyName' => 'Company_' . $id,
-            'userName', 'username' => 'user_' . $id,
-            'url', 'domainName' => 'https://example-' . $id . '.com',
-            'ipv4' => rand(1, 255) . '.' . rand(0, 255) . '.' . rand(0, 255) . '.' . rand(1, 254),
-            'text', 'sentence', 'paragraph' => 'Lorem ipsum ' . $id,
-            default => 'anon_' . $id,
+            'name', 'firstName', 'lastName' => 'User_'.$id,
+            'email', 'safeEmail', 'freeEmail', 'companyEmail' => 'user_'.$id.'@example.com',
+            'phoneNumber', 'phone', 'e164PhoneNumber' => '+1'.random_int(1000000000, 9999999999),
+            'address', 'streetAddress' => $id.' Example Street',
+            'city' => 'City_'.$id,
+            'postcode', 'zipCode' => (string) random_int(10000, 99999),
+            'country' => 'Country_'.$id,
+            'company', 'companyName' => 'Company_'.$id,
+            'userName', 'username' => 'user_'.$id,
+            'url', 'domainName' => 'https://example-'.$id.'.com',
+            'ipv4' => random_int(1, 255).'.'.random_int(0, 255).'.'.random_int(0, 255).'.'.random_int(1, 254),
+            'text', 'sentence', 'paragraph' => 'Lorem ipsum '.$id,
+            default => 'anon_'.$id,
         };
     }
 

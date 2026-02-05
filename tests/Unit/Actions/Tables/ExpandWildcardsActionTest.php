@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-use Dwb\DbExport\Actions\Tables\ExpandWildcardsAction;
+use Xve\DbExport\Actions\Tables\ExpandWildcardsAction;
 
 beforeEach(function (): void {
     $this->action = new ExpandWildcardsAction;

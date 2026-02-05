@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Dwb\DbExport\Config;
+namespace Xve\DbExport\Config;
 
 readonly class ExportConfig
 {
@@ -36,7 +36,7 @@ readonly class ExportConfig
      */
     public function getEffectiveStructureOnly(): array
     {
-        if (empty($this->includeData)) {
+        if ($this->includeData === []) {
             return $this->structureOnly;
         }
 

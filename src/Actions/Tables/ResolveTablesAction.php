@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace Dwb\DbExport\Actions\Tables;
+namespace Xve\DbExport\Actions\Tables;
 
-use Dwb\DbExport\Config\ExportConfig;
-use Dwb\DbExport\Contracts\TableResolverInterface;
-use Dwb\DbExport\DTOs\TableInfo;
 use Illuminate\Database\DatabaseManager;
+use Xve\DbExport\Config\ExportConfig;
+use Xve\DbExport\Contracts\TableResolverInterface;
+use Xve\DbExport\DTOs\TableInfo;
 
 class ResolveTablesAction implements TableResolverInterface
 {

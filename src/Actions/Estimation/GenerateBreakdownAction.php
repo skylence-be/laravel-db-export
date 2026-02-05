@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace Dwb\DbExport\Actions\Estimation;
+namespace Xve\DbExport\Actions\Estimation;
 
-use Dwb\DbExport\DTOs\SizeEstimate;
-use Dwb\DbExport\DTOs\TableInfo;
+use Xve\DbExport\DTOs\SizeEstimate;
+use Xve\DbExport\DTOs\TableInfo;
 
 class GenerateBreakdownAction
 {

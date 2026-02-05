@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Dwb\DbExport\Actions\Tables;
+namespace Xve\DbExport\Actions\Tables;
 
 class ExpandWildcardsAction
 {

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-use Dwb\DbExport\DTOs\ExportResult;
+use Xve\DbExport\DTOs\ExportResult;
 
 test('creates successful result', function (): void {
     $result = ExportResult::success(

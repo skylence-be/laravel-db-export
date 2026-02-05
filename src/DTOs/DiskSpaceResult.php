@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Dwb\DbExport\DTOs;
+namespace Xve\DbExport\DTOs;
 
 readonly class DiskSpaceResult
 {

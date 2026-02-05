@@ -1,5 +1,5 @@
 {
-    "name": "dwb/laravel-db-export",
+    "name": "xve/laravel-db-export",
     "description": "Laravel database export package with profile-based exclusions, anonymization, and zero-impact exports",
     "keywords": [
         "laravel",
@@ -38,12 +38,12 @@
     },
     "autoload": {
         "psr-4": {
-            "Dwb\\DbExport\\": "src/"
+            "Xve\\DbExport\\": "src/"
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "Dwb\\DbExport\\Tests\\": "tests/"
+            "Xve\\DbExport\\Tests\\": "tests/"
         }
     },
     "scripts": {
@@ -74,10 +74,10 @@
     "extra": {
         "laravel": {
             "providers": [
-                "Dwb\\DbExport\\DbExportServiceProvider"
+                "Xve\\DbExport\\DbExportServiceProvider"
             ],
             "aliases": {
-                "DbExport": "Dwb\\DbExport\\Facades\\DbExport"
+                "DbExport": "Xve\\DbExport\\Facades\\DbExport"
             }
         }
     }

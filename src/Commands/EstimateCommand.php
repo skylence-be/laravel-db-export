@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace Dwb\DbExport\Commands;
+namespace Xve\DbExport\Commands;
 
-use Dwb\DbExport\Actions\Estimation\GenerateBreakdownAction;
-use Dwb\DbExport\Config\ExportConfig;
-use Dwb\DbExport\DbExportManager;
 use Illuminate\Console\Command;
+use Xve\DbExport\Actions\Estimation\GenerateBreakdownAction;
+use Xve\DbExport\Config\ExportConfig;
+use Xve\DbExport\DbExportManager;
 
 class EstimateCommand extends Command
 {
@@ -77,7 +77,7 @@ class EstimateCommand extends Command
     }
 
     /**
-     * @param  \Dwb\DbExport\DTOs\SizeEstimate  $estimate
+     * @param  \Xve\DbExport\DTOs\SizeEstimate  $estimate
      */
     protected function displaySummary($estimate): void
     {

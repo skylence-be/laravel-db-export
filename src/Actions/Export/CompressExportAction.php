@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Dwb\DbExport\Actions\Export;
+namespace Xve\DbExport\Actions\Export;
 
-use Dwb\DbExport\Exceptions\ExportException;
+use Xve\DbExport\Exceptions\ExportException;
 
 class CompressExportAction
 {

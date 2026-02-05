@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-use Dwb\DbExport\Actions\Anonymization\Strategies\MaskStrategy;
+use Xve\DbExport\Actions\Anonymization\Strategies\MaskStrategy;
 
 beforeEach(function (): void {
     $this->strategy = new MaskStrategy;

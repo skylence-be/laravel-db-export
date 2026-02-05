@@ -2,13 +2,13 @@
 
 declare(strict_types=1);
 
-namespace Dwb\DbExport\Actions\Estimation;
+namespace Xve\DbExport\Actions\Estimation;
 
-use Dwb\DbExport\Contracts\DiskCheckerInterface;
-use Dwb\DbExport\Contracts\SizeEstimatorInterface;
-use Dwb\DbExport\DTOs\SizeEstimate;
-use Dwb\DbExport\DTOs\TableInfo;
 use Illuminate\Database\DatabaseManager;
+use Xve\DbExport\Contracts\DiskCheckerInterface;
+use Xve\DbExport\Contracts\SizeEstimatorInterface;
+use Xve\DbExport\DTOs\SizeEstimate;
+use Xve\DbExport\DTOs\TableInfo;
 
 class EstimateSizeAction implements SizeEstimatorInterface
 {

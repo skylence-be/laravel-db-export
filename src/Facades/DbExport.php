@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace Dwb\DbExport\Facades;
+namespace Xve\DbExport\Facades;
 
-use Dwb\DbExport\Config\ExportConfig;
-use Dwb\DbExport\DTOs\ExportResult;
-use Dwb\DbExport\DTOs\SizeEstimate;
 use Illuminate\Support\Facades\Facade;
+use Xve\DbExport\Config\ExportConfig;
+use Xve\DbExport\DTOs\ExportResult;
+use Xve\DbExport\DTOs\SizeEstimate;
 
 /**
  * @method static ExportResult export(?ExportConfig $config = null)
@@ -15,10 +15,10 @@ use Illuminate\Support\Facades\Facade;
  * @method static array<string, mixed> dryRun(?ExportConfig $config = null)
  * @method static array<string, array<string, mixed>> getProfiles()
  * @method static array<int, string> getProfileNames()
- * @method static \Dwb\DbExport\DbExportManager forConnection(string $connection)
- * @method static \Dwb\DbExport\DbExportManager withProfile(string $profile)
+ * @method static \Xve\DbExport\DbExportManager forConnection(string $connection)
+ * @method static \Xve\DbExport\DbExportManager withProfile(string $profile)
  *
- * @see \Dwb\DbExport\DbExportManager
+ * @see \Xve\DbExport\DbExportManager
  */
 class DbExport extends Facade
 {

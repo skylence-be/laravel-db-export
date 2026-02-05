@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Dwb\DbExport\Contracts;
+namespace Xve\DbExport\Contracts;
 
-use Dwb\DbExport\Config\AnonymizationConfig;
+use Xve\DbExport\Config\AnonymizationConfig;
 
 interface AnonymizerInterface
 {

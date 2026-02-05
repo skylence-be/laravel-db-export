@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Dwb\DbExport\Commands;
+namespace Xve\DbExport\Commands;
 
 use Illuminate\Console\Command;
 
@@ -38,7 +38,7 @@ class SetupCommand extends Command
 
         $found = $this->findMysqldump();
 
-        if (empty($found)) {
+        if ($found === []) {
             $this->error('mysqldump not found in common locations.');
             $this->newLine();
             $this->line('You can manually find it with:');
@@ -68,19 +68,19 @@ class SetupCommand extends Command
 
         $this->line('Add to your <comment>.env</comment> file:');
         $this->newLine();
-        $this->line("  <fg=green>DB_EXPORT_DUMP_BINARY_PATH={$dirPath}</>");
+        $this->line(sprintf('  <fg=green>DB_EXPORT_DUMP_BINARY_PATH=%s</>', $dirPath));
         $this->newLine();
 
         $this->line('Or set in <comment>config/db-export.php</comment>:');
         $this->newLine();
-        $this->line("  <fg=green>'dump_binary_path' => '{$dirPath}',</>");
+        $this->line(sprintf("  <fg=green>'dump_binary_path' => '%s',</>", $dirPath));
 
         /** @var string|null $currentPath */
         $currentPath = config('db-export.mysql_options.dump_binary_path');
         if (! empty($currentPath)) {
             $this->newLine();
             $this->info('Current configuration:');
-            $this->line("  {$currentPath}");
+            $this->line('  '.$currentPath);
 
             if (file_exists($currentPath.'/mysqldump') || file_exists($currentPath.'/mysqldump.exe')) {
                 $this->line('  <fg=green>OK - mysqldump found</>');
@@ -133,7 +133,7 @@ class SetupCommand extends Command
         $command = PHP_OS_FAMILY === 'Windows' ? 'where mysqldump' : 'which mysqldump';
         $result = @exec($command, $output, $returnCode);
 
-        if ($returnCode === 0 && ! empty($result)) {
+        if ($returnCode === 0 && ! in_array($result, ['', '0', false], true)) {
             return $result;
         }
 
@@ -144,7 +144,7 @@ class SetupCommand extends Command
     {
         $output = @exec($binary.' --version 2>&1', $lines, $returnCode);
 
-        if ($returnCode === 0 && ! empty($output)) {
+        if ($returnCode === 0 && ! in_array($output, ['', '0', false], true)) {
             // Extract version from output like "mysqldump  Ver 10.11.6-MariaDB..."
             if (preg_match('/Ver\s+([^\s]+)/', $output, $matches)) {
                 return $matches[1];
