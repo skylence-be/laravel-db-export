@@ -239,10 +239,17 @@ Define custom profiles in `config/db-export.php`:
 
 ## Anonymization Strategies
 
+Anonymization works with or without `fakerphp/faker`. If faker is installed, you get realistic fake data. Without it, simple fallbacks are used (e.g., `User_a1b2c3d4`, `user_a1b2c3d4@example.com`).
+
+```bash
+# Optional: Install faker for realistic fake data
+composer require fakerphp/faker
+```
+
 ```php
 'anonymize' => [
     'users' => [
-        // Faker - generate fake data
+        // Faker - generate fake data (or fallback if faker not installed)
         'name' => ['strategy' => 'faker', 'method' => 'name'],
         'email' => ['strategy' => 'faker', 'method' => 'safeEmail'],
         'phone' => ['strategy' => 'faker', 'method' => 'phoneNumber'],

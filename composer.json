@@ -22,8 +22,10 @@
         "illuminate/contracts": "^10.0|^11.0|^12.0",
         "illuminate/database": "^10.0|^11.0|^12.0",
         "illuminate/support": "^10.0|^11.0|^12.0",
-        "spatie/db-dumper": "^3.4",
-        "fakerphp/faker": "^1.23"
+        "spatie/db-dumper": "^3.4"
+    },
+    "suggest": {
+        "fakerphp/faker": "Required for realistic fake data during anonymization (^1.23). Without it, simple fallbacks are used."
     },
     "require-dev": {
         "captainhook/captainhook": "^5.27",
