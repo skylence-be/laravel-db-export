@@ -6,16 +6,22 @@ namespace Dwb\DbExport\Actions\Anonymization\Strategies;
 
 use Dwb\DbExport\Contracts\AnonymizationStrategyInterface;
 use Dwb\DbExport\Exceptions\AnonymizationException;
-use Faker\Factory as FakerFactory;
-use Faker\Generator as Faker;
 
 class FakerStrategy implements AnonymizationStrategyInterface
 {
-    protected Faker $faker;
+    protected ?object $faker = null;
 
-    public function __construct(?Faker $faker = null)
+    protected bool $fakerAvailable;
+
+    public function __construct(?object $faker = null)
     {
-        $this->faker = $faker ?? FakerFactory::create();
+        $this->fakerAvailable = class_exists(\Faker\Factory::class);
+
+        if ($faker !== null) {
+            $this->faker = $faker;
+        } elseif ($this->fakerAvailable) {
+            $this->faker = \Faker\Factory::create();
+        }
     }
 
     public function getName(): string
@@ -35,7 +41,36 @@ class FakerStrategy implements AnonymizationStrategyInterface
             throw AnonymizationException::missingOption('method', 'faker');
         }
 
-        return $this->callFakerMethod($method, $options['args'] ?? []);
+        // Use faker if available, otherwise use built-in fallbacks
+        if ($this->fakerAvailable && $this->faker !== null) {
+            return $this->callFakerMethod($method, $options['args'] ?? []);
+        }
+
+        return $this->fallbackAnonymize($method, $value);
+    }
+
+    /**
+     * Built-in fallbacks when faker is not available.
+     */
+    protected function fallbackAnonymize(string $method, mixed $originalValue): mixed
+    {
+        $id = substr(md5((string) $originalValue . random_bytes(8)), 0, 8);
+
+        return match ($method) {
+            'name', 'firstName', 'lastName' => 'User_' . $id,
+            'email', 'safeEmail', 'freeEmail', 'companyEmail' => 'user_' . $id . '@example.com',
+            'phoneNumber', 'phone', 'e164PhoneNumber' => '+1' . rand(1000000000, 9999999999),
+            'address', 'streetAddress' => $id . ' Example Street',
+            'city' => 'City_' . $id,
+            'postcode', 'zipCode' => (string) rand(10000, 99999),
+            'country' => 'Country_' . $id,
+            'company', 'companyName' => 'Company_' . $id,
+            'userName', 'username' => 'user_' . $id,
+            'url', 'domainName' => 'https://example-' . $id . '.com',
+            'ipv4' => rand(1, 255) . '.' . rand(0, 255) . '.' . rand(0, 255) . '.' . rand(1, 254),
+            'text', 'sentence', 'paragraph' => 'Lorem ipsum ' . $id,
+            default => 'anon_' . $id,
+        };
     }
 
     public function supports(array $config): bool
@@ -119,13 +154,20 @@ class FakerStrategy implements AnonymizationStrategyInterface
 
     public function setLocale(string $locale): self
     {
-        $this->faker = FakerFactory::create($locale);
+        if ($this->fakerAvailable) {
+            $this->faker = \Faker\Factory::create($locale);
+        }
 
         return $this;
     }
 
-    public function getFaker(): Faker
+    public function getFaker(): ?object
     {
         return $this->faker;
+    }
+
+    public function isFakerAvailable(): bool
+    {
+        return $this->fakerAvailable;
     }
 }
