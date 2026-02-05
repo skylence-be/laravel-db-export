@@ -83,7 +83,7 @@ class AnonymizeTableAction implements AnonymizerInterface
      */
     protected function anonymizeRow(string $table, array $row, array $rules, ?AnonymizationConfig $config = null): array
     {
-        // Skip anonymization for preserved rows (e.g., admin emails)
+        // Check if this specific row should be preserved (e.g., admin emails)
         if ($config !== null && $config->shouldPreserveRow($table, $row)) {
             return $row;
         }
