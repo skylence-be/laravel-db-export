@@ -15,7 +15,8 @@ class ExecuteExportAction implements ExporterInterface
     public function __construct(
         protected BuildDumperAction $buildDumper,
         protected CompressExportAction $compress,
-        protected WrapWithForeignKeysAction $wrapForeignKeys
+        protected WrapWithForeignKeysAction $wrapForeignKeys,
+        protected ?ExportAnonymizedTableAction $exportAnonymized = null
     ) {}
 
     /**
@@ -73,15 +74,42 @@ class ExecuteExportAction implements ExporterInterface
      */
     protected function executeDump(ExportConfig $config, array $tables, string $outputPath): void
     {
-        $dataTables = array_filter($tables, fn (TableInfo $t): bool => ! $t->structureOnly && ! $t->isView);
+        $anonymizedTableNames = array_keys($config->anonymize);
 
+        // Separate tables into anonymized and non-anonymized
+        $dataTables = array_filter(
+            $tables,
+            fn (TableInfo $t): bool => ! $t->structureOnly && ! $t->isView && ! in_array($t->name, $anonymizedTableNames, true)
+        );
+
+        $anonymizedTables = array_filter(
+            $tables,
+            fn (TableInfo $t): bool => ! $t->structureOnly && ! $t->isView && in_array($t->name, $anonymizedTableNames, true)
+        );
+
+        // Export non-anonymized tables with mysqldump
         if ($dataTables !== []) {
             $dumper = $this->buildDumper->execute($config, $dataTables);
             $dumper->dumpToFile($outputPath);
         } else {
-            file_put_contents($outputPath, "-- No data tables to export\n");
+            file_put_contents($outputPath, "-- Database export\n");
         }
 
+        // Export anonymized tables via PHP
+        if ($anonymizedTables !== [] && $this->exportAnonymized !== null) {
+            $handle = fopen($outputPath, 'a');
+            if ($handle !== false) {
+                fwrite($handle, "\n-- Anonymized tables\n");
+
+                foreach ($anonymizedTables as $table) {
+                    $this->exportAnonymized->execute($table->name, $config, $handle);
+                }
+
+                fclose($handle);
+            }
+        }
+
+        // Export structure-only tables
         $structureDumper = $this->buildDumper->buildStructureOnlyDumper($config, $tables);
 
         if ($structureDumper instanceof \Spatie\DbDumper\Databases\MySql) {

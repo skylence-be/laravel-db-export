@@ -93,7 +93,8 @@ class DbExportServiceProvider extends ServiceProvider
         $this->app->bind(ExporterInterface::class, fn (Application $app): Actions\Export\ExecuteExportAction => new Actions\Export\ExecuteExportAction(
             $app->make(Actions\Export\BuildDumperAction::class),
             $app->make(Actions\Export\CompressExportAction::class),
-            $app->make(Actions\Export\WrapWithForeignKeysAction::class)
+            $app->make(Actions\Export\WrapWithForeignKeysAction::class),
+            $app->make(Actions\Export\ExportAnonymizedTableAction::class)
         ));
     }
 
