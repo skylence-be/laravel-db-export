@@ -91,36 +91,39 @@ php artisan db:export:list-profiles --detailed
 
 ```bash
 php artisan db:export:estimate
-php artisan db:export:estimate --profile=clean
-php artisan db:export:estimate --profile=clean --detailed
+php artisan db:export:estimate --detailed
 ```
 
 ### Export Database
 
 ```bash
-# Basic export with default profile
+# Export with default profile
 php artisan db:export
 
-# Export with specific profile
-php artisan db:export --profile=clean
-
 # Skip confirmation prompt
-php artisan db:export --profile=clean --force
+php artisan db:export --force
 
 # Dry run (show what would be exported)
-php artisan db:export --profile=clean --dry-run
+php artisan db:export --dry-run
+
+# Export only telescope/audits for debugging
+php artisan db:export --profile=inspection
+```
+
+### Prune Exports
+
+Delete all export files:
+
+```bash
+php artisan db:export:prune
 ```
 
 ## Export Profiles
 
 | Profile | Description |
 |---------|-------------|
-| `default` | Full database export |
-| `clean` | Excludes telescope, logs, sessions, cache. Audits as structure-only |
-| `minimal` | Clean + more structure-only tables |
-| `schema` | Structure only, no data |
+| `default` | Clean export with structure-only for logs/cache/sessions and anonymized PII |
 | `inspection` | Only telescope and audits (for debugging) |
-| `anonymized` | Clean + anonymized user data |
 
 ## Command Options
 
@@ -174,40 +177,40 @@ php artisan db:export --profile=clean --dry-run
 
 ## Examples
 
-### Daily Backup (Fast)
+### Standard Export
 
 ```bash
-php artisan db:export --profile=clean --force
+php artisan db:export --force
 ```
 
-Exports everything except telescope/logs, with `audits` as structure-only.
+Exports everything with structure-only for logs/cache/sessions and anonymized PII.
 
-### Full Backup with Audits
+### Include Audit Data
 
 ```bash
-php artisan db:export --profile=clean --include-data=audits --force
+php artisan db:export --include-data=audits --force
 ```
 
-Same as clean but includes audit data.
+Override structure-only to include audit data.
 
-### Debug Export for Laravel Boost
+### Debug Export
 
 ```bash
 php artisan db:export --profile=inspection --force
 ```
 
-Exports only telescope and audit tables for inspection tools.
-
-### Schema Only
-
-```bash
-php artisan db:export --profile=schema --force
-```
+Exports only telescope and audit tables for debugging.
 
 ### Specific Tables
 
 ```bash
 php artisan db:export --include-only=users --include-only=orders --force
+```
+
+### Structure Only (No Data)
+
+```bash
+php artisan db:export --structure-only="*" --force
 ```
 
 ## Profiles Configuration
@@ -303,7 +306,7 @@ The package uses these mysqldump options by default:
 
 1. **Use a read replica** for exports when possible:
    ```bash
-   php artisan db:export --connection=replica --profile=clean
+   php artisan db:export --connection=replica
    ```
 
 2. **Schedule during low-traffic hours**

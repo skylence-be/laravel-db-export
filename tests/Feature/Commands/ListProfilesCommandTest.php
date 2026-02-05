@@ -8,15 +8,12 @@ test('lists available profiles', function (): void {
     artisan('db:export:list-profiles')
         ->assertSuccessful()
         ->expectsOutputToContain('default')
-        ->expectsOutputToContain('clean')
-        ->expectsOutputToContain('minimal')
-        ->expectsOutputToContain('schema')
-        ->expectsOutputToContain('anonymized');
+        ->expectsOutputToContain('inspection');
 });
 
 test('shows detailed profile information', function (): void {
     artisan('db:export:list-profiles', ['--detailed' => true])
         ->assertSuccessful()
-        ->expectsOutputToContain('clean')
+        ->expectsOutputToContain('default')
         ->expectsOutputToContain('telescope_*');
 });
