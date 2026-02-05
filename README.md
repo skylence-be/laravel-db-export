@@ -294,13 +294,22 @@ Users with `@xve.be` or `@company.com` emails will keep their original data whil
 
 ## Production Usage
 
-### Minimal Impact
+### Zero-Impact Exports
 
-The package uses these mysqldump options by default:
+**The Problem:** Traditional `mysqldump` commands can severely impact production databases:
+- Table locks block all writes during export
+- Large result sets consume server memory
+- Long-running exports cause timeouts and slow queries
 
-- `--single-transaction` - Consistent snapshot without locks (InnoDB)
-- `--quick` - Row-by-row streaming, low memory
-- `--skip-lock-tables` - No table locks
+**The Solution:** This package uses mysqldump options that eliminate these issues:
+
+| Option | Problem Solved |
+|--------|----------------|
+| `--single-transaction` | Creates a consistent snapshot using InnoDB's MVCC. No table locks, writes continue normally. |
+| `--quick` | Streams rows directly to output instead of buffering in memory. Handles multi-GB tables without memory issues. |
+| `--skip-lock-tables` | Prevents `LOCK TABLES` command that would block all writes. |
+
+With these options, you can safely export a production database while the application continues serving requests with no degradation.
 
 ### Best Practices
 
