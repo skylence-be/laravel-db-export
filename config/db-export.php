@@ -114,16 +114,10 @@ return [
     */
     'profiles' => [
         'default' => [
-            'description' => 'Full database export with no exclusions',
+            'description' => 'Clean export with anonymized PII data',
             'exclude' => [],
-            'structure_only' => [],
-            'include_only' => null, // null means all tables
-            'anonymize' => [],
-        ],
-
-        'clean' => [
-            'description' => 'Export without logs, sessions, and cache tables',
-            'exclude' => [
+            'structure_only' => [
+                'audits',
                 'telescope_*',
                 'pulse_*',
                 'sessions',
@@ -136,11 +130,16 @@ return [
                 'password_reset_tokens',
                 'personal_access_tokens',
             ],
-            'structure_only' => [
-                'audits', // Large audit log - use --include-data=audits to include
-            ],
             'include_only' => null,
-            'anonymize' => [],
+            'anonymize' => [
+                'users' => [
+                    'name' => ['strategy' => 'faker', 'method' => 'name'],
+                    'email' => ['strategy' => 'faker', 'method' => 'safeEmail'],
+                    'password' => ['strategy' => 'hash', 'value' => 'password'],
+                    'phone' => ['strategy' => 'faker', 'method' => 'phoneNumber'],
+                    'remember_token' => ['strategy' => 'null'],
+                ],
+            ],
         ],
 
         'inspection' => [
@@ -152,64 +151,6 @@ return [
                 'audits',
             ],
             'anonymize' => [],
-        ],
-
-        'minimal' => [
-            'description' => 'Minimal export with structure-only for large tables',
-            'exclude' => [
-                'telescope_*',
-                'pulse_*',
-                'sessions',
-                'cache',
-                'cache_locks',
-                'jobs',
-                'job_batches',
-                'failed_jobs',
-                '*_logs',
-            ],
-            'structure_only' => [
-                'activity_log',
-                'notifications',
-                'audits',
-            ],
-            'include_only' => null,
-            'anonymize' => [],
-        ],
-
-        'schema' => [
-            'description' => 'Structure-only export (no data)',
-            'exclude' => [],
-            'structure_only' => ['*'],
-            'include_only' => null,
-            'anonymize' => [],
-        ],
-
-        'anonymized' => [
-            'description' => 'Clean export with anonymized PII data',
-            'exclude' => [
-                'telescope_*',
-                'pulse_*',
-                'sessions',
-                'cache',
-                'cache_locks',
-                'jobs',
-                'job_batches',
-                'failed_jobs',
-                '*_logs',
-                'password_reset_tokens',
-                'personal_access_tokens',
-            ],
-            'structure_only' => [],
-            'include_only' => null,
-            'anonymize' => [
-                'users' => [
-                    'name' => ['strategy' => 'faker', 'method' => 'name'],
-                    'email' => ['strategy' => 'faker', 'method' => 'safeEmail'],
-                    'password' => ['strategy' => 'hash', 'value' => 'password'],
-                    'phone' => ['strategy' => 'faker', 'method' => 'phoneNumber'],
-                    'remember_token' => ['strategy' => 'null'],
-                ],
-            ],
         ],
     ],
 
