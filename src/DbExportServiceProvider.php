@@ -9,6 +9,7 @@ use Illuminate\Support\ServiceProvider;
 use Xve\DbExport\Commands\EstimateCommand;
 use Xve\DbExport\Commands\ExportCommand;
 use Xve\DbExport\Commands\ListProfilesCommand;
+use Xve\DbExport\Commands\PruneCommand;
 use Xve\DbExport\Commands\SetupCommand;
 use Xve\DbExport\Config\ProfileManager;
 use Xve\DbExport\Contracts\AnonymizerInterface;
@@ -53,6 +54,7 @@ class DbExportServiceProvider extends ServiceProvider
                 ExportCommand::class,
                 EstimateCommand::class,
                 ListProfilesCommand::class,
+                PruneCommand::class,
                 SetupCommand::class,
             ]);
         }
