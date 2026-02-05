@@ -38,7 +38,7 @@ class AnonymizeTableAction implements AnonymizerInterface
         $rules = $config->getRulesForTable($table);
 
         return array_map(
-            fn (array $row): array => $this->anonymizeRow($row, $rules),
+            fn (array $row): array => $this->anonymizeRow($table, $row, $rules, $config),
             $rows
         );
     }
@@ -81,8 +81,13 @@ class AnonymizeTableAction implements AnonymizerInterface
      * @param  array<string, array<string, mixed>>  $rules
      * @return array<string, mixed>
      */
-    protected function anonymizeRow(array $row, array $rules): array
+    protected function anonymizeRow(string $table, array $row, array $rules, ?AnonymizationConfig $config = null): array
     {
+        // Skip anonymization for preserved rows (e.g., admin emails)
+        if ($config !== null && $config->shouldPreserveRow($table, $row)) {
+            return $row;
+        }
+
         foreach ($rules as $column => $rule) {
             if (! array_key_exists($column, $row)) {
                 continue;

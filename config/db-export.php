@@ -229,6 +229,32 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Preserve Rows (Skip Anonymization by Domain)
+    |--------------------------------------------------------------------------
+    |
+    | Skip anonymization for rows where specific columns match certain email
+    | domains. Useful for keeping admin/developer accounts intact.
+    |
+    | Format:
+    |   'table_name' => [
+    |       'column' => 'email_column_name',
+    |       'domains' => ['xve.be', 'company.com'],
+    |   ],
+    |
+    */
+    'preserve_rows' => [
+        // 'users' => [
+        //     'column' => 'email',
+        //     'domains' => ['xve.be', 'company.com'],
+        // ],
+        // 'customers' => [
+        //     'column' => 'contact_email',
+        //     'domains' => ['xve.be'],
+        // ],
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
     | Column Exclusions
     |--------------------------------------------------------------------------
     |
