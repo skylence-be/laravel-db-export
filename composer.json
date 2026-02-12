@@ -1,5 +1,5 @@
 {
-    "name": "xve/laravel-db-export",
+    "name": "skylence/laravel-db-export",
     "description": "Laravel database export package with profile-based exclusions, anonymization, and zero-impact exports",
     "keywords": [
         "laravel",
