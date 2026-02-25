@@ -24,13 +24,18 @@ class WrapWithForeignKeysAction
 
         $tempPath = $filePath.'.fk_wrap';
 
-        $header = "-- Disable foreign key checks for import\n";
+        $header = "-- Set permissive SQL mode for import (allows zero dates)\n";
+        $header .= "SET @OLD_SQL_MODE=@@SQL_MODE;\n";
+        $header .= "SET SQL_MODE='NO_AUTO_VALUE_ON_ZERO';\n";
+        $header .= "-- Disable foreign key checks for import\n";
         $header .= $this->disableStatement;
         $header .= "\n";
 
         $footer = "\n";
         $footer .= "-- Re-enable foreign key checks\n";
         $footer .= $this->enableStatement;
+        $footer .= "-- Restore original SQL mode\n";
+        $footer .= "SET SQL_MODE=@OLD_SQL_MODE;\n";
 
         // Write header to temp file
         $tempHandle = fopen($tempPath, 'w');
@@ -69,13 +74,18 @@ class WrapWithForeignKeysAction
      */
     public function wrap(string $sql): string
     {
-        $header = "-- Disable foreign key checks for import\n";
+        $header = "-- Set permissive SQL mode for import (allows zero dates)\n";
+        $header .= "SET @OLD_SQL_MODE=@@SQL_MODE;\n";
+        $header .= "SET SQL_MODE='NO_AUTO_VALUE_ON_ZERO';\n";
+        $header .= "-- Disable foreign key checks for import\n";
         $header .= $this->disableStatement;
         $header .= "\n";
 
         $footer = "\n";
         $footer .= "-- Re-enable foreign key checks\n";
         $footer .= $this->enableStatement;
+        $footer .= "-- Restore original SQL mode\n";
+        $footer .= "SET SQL_MODE=@OLD_SQL_MODE;\n";
 
         return $header.$sql.$footer;
     }
