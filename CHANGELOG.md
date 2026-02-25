@@ -7,6 +7,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.2.0] - 2026-02-25
+
+### Added
+- Built-in progress bar during export showing each phase (dumping, anonymizing, structure, FK wrapping, compressing)
+- Automatically active in console, silent in non-console contexts
+
+## [1.1.0] - 2026-02-25
+
+### Fixed
+- Apply default profile when no `--profile` option is passed
+
+### Changed
+- Renamed package namespace from xve to skylence
+
 ## [1.0.0] - 2026-02-05
 
 ### Added
