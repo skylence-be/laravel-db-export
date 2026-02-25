@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.2.1] - 2026-02-25
+
+### Fixed
+- Include CREATE TABLE statements for anonymized tables in export (importing into a fresh database failed)
+
 ## [1.2.0] - 2026-02-25
 
 ### Added
