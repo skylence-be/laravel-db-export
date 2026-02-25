@@ -203,8 +203,14 @@ Exports only telescope and audit tables for debugging.
 
 ### Specific Tables
 
+Export only the tables you need — no profile required:
+
 ```bash
-php artisan db:export --include-only=users --include-only=orders --force
+# Single table
+php artisan db:export --include-only=users --force
+
+# Multiple tables
+php artisan db:export --include-only=bunkering --include-only=klant --include-only=facturen --force
 ```
 
 ### Structure Only (No Data)
@@ -334,9 +340,9 @@ With these options, you can safely export a production database while the applic
 
 Default: `storage/app/db-exports/`
 
-Files are named: `{database}_{date}_{time}.sql.gz`
+Files are named: `{database}_{date}_{time}_{profile}.sql.gz`
 
-Example: `my_app_2024-01-15_143052.sql.gz`
+Example: `my_app_2026-01-15_14h30_default.sql.gz`
 
 ## See Also
 
