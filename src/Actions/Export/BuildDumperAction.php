@@ -195,7 +195,6 @@ class BuildDumperAction
 
         $tableNames = array_map(fn (TableInfo $t): string => $t->name, $structureOnlyTables);
         $dumper->includeTables($tableNames);
-        $dumper->doNotCreateTables();
         $dumper->addExtraOption('--no-data');
 
         return $dumper;
