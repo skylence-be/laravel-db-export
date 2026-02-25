@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.2.3] - 2026-02-25
+
+### Fixed
+- Set permissive SQL mode in export header to allow zero dates (`0000-00-00`) during import
+
 ## [1.2.2] - 2026-02-25
 
 ### Fixed
