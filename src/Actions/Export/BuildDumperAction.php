@@ -193,9 +193,9 @@ class BuildDumperAction
             $dumper->setDumpBinaryPath($dumpBinaryPath);
         }
 
-        $tableNames = array_map(fn (TableInfo $t): string => $t->name, $structureOnlyTables);
+        $tableNames = array_values(array_map(fn (TableInfo $t): string => $t->name, $structureOnlyTables));
         $dumper->includeTables($tableNames);
-        $dumper->addExtraOption('--no-data');
+        $dumper->doNotDumpData();
 
         return $dumper;
     }

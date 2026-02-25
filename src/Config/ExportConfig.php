@@ -70,7 +70,7 @@ readonly class ExportConfig
         $connection = $this->connection ?? $defaultConnection;
         /** @var string $database */
         $database = config(sprintf('database.connections.%s.database', $connection), 'database');
-        $timestamp = date('Y-m-d_His');
+        $timestamp = date('Y-m-d_H\hi');
         $extension = $this->compress ? '.sql.gz' : '.sql';
 
         return sprintf('%s_%s%s', $database, $timestamp, $extension);
