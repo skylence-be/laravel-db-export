@@ -73,7 +73,9 @@ readonly class ExportConfig
         $timestamp = date('Y-m-d_H\hi');
         $extension = $this->compress ? '.sql.gz' : '.sql';
 
-        return sprintf('%s_%s%s', $database, $timestamp, $extension);
+        $profileSuffix = $this->profile !== null ? '_'.$this->profile : '';
+
+        return sprintf('%s_%s%s%s', $database, $timestamp, $profileSuffix, $extension);
     }
 
     public function getFullPath(): string
@@ -94,10 +96,12 @@ readonly class ExportConfig
         $profileIncludeOnly = $profileConfig['include_only'] ?? null;
         /** @var array<string, array<string, array<string, mixed>>> $profileAnonymize */
         $profileAnonymize = $profileConfig['anonymize'] ?? [];
+        /** @var string|null $profileName */
+        $profileName = $profileConfig['_name'] ?? null;
 
         return new self(
             connection: $this->connection,
-            profile: $this->profile,
+            profile: $this->profile ?? $profileName,
             outputPath: $this->outputPath,
             filename: $this->filename,
             compress: $this->compress,

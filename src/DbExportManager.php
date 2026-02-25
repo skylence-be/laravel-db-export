@@ -195,6 +195,7 @@ class DbExportManager
 
         if ($profileManager->exists($profileName)) {
             $profileConfig = $profileManager->get($profileName);
+            $profileConfig['_name'] = $profileName;
             $config = $config->withProfile($profileConfig);
         }
 
