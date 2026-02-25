@@ -190,8 +190,11 @@ class DbExportManager
             );
         }
 
-        if ($config->profile !== null) {
-            $profileConfig = $this->getProfile($config->profile);
+        $profileName = $config->profile ?? 'default';
+        $profileManager = $this->app->make(ProfileManager::class);
+
+        if ($profileManager->exists($profileName)) {
+            $profileConfig = $profileManager->get($profileName);
             $config = $config->withProfile($profileConfig);
         }
 
