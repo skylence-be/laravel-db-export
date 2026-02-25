@@ -44,7 +44,6 @@ class ExportAnonymizedTableAction
         fwrite($handle, "TRUNCATE TABLE `{$table}`;\n");
 
         $offset = 0;
-        $isFirstBatch = true;
 
         while ($offset < $totalRows) {
             /** @var array<int, object> $rows */
@@ -66,10 +65,9 @@ class ExportAnonymizedTableAction
             $anonymizedRows = $this->anonymizer->anonymize($table, $rowArrays, $anonymizationConfig);
 
             // Generate INSERT statements
-            $this->writeInsertStatements($handle, $table, $anonymizedRows, $isFirstBatch);
+            $this->writeInsertStatements($handle, $table, $anonymizedRows);
 
             $offset += self::BATCH_SIZE;
-            $isFirstBatch = false;
         }
 
         fwrite($handle, "\n");
@@ -81,7 +79,11 @@ class ExportAnonymizedTableAction
      * @param  resource  $handle
      * @param  array<int, array<string, mixed>>  $rows
      */
-    protected function writeInsertStatements($handle, string $table, array $rows, bool $includeHeader = true): void
+    /**
+     * @param  resource  $handle
+     * @param  array<int, array<string, mixed>>  $rows
+     */
+    protected function writeInsertStatements($handle, string $table, array $rows): void
     {
         if ($rows === []) {
             return;
@@ -92,9 +94,7 @@ class ExportAnonymizedTableAction
         $columns = array_keys($firstRow);
         $columnList = '`'.implode('`, `', $columns).'`';
 
-        if ($includeHeader) {
-            fwrite($handle, "INSERT INTO `{$table}` ({$columnList}) VALUES\n");
-        }
+        fwrite($handle, "INSERT INTO `{$table}` ({$columnList}) VALUES\n");
 
         $valueStrings = [];
         foreach ($rows as $row) {
