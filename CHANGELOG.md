@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.2.5] - 2026-02-25
+
+### Fixed
+- Include CREATE TABLE statements for structure-only tables (conflicting mysqldump flags produced empty output)
+
+### Changed
+- Export filename timestamp now uses human-readable `13h26` format instead of `132643`
+
 ## [1.2.4] - 2026-02-25
 
 ### Fixed
