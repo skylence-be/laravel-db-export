@@ -4,6 +4,10 @@ declare(strict_types=1);
 
 namespace Xve\DbExport\Actions\Export;
 
+use Symfony\Component\Console\Helper\ProgressBar;
+use Symfony\Component\Console\Output\ConsoleOutput;
+use Symfony\Component\Console\Output\NullOutput;
+use Symfony\Component\Console\Output\OutputInterface;
 use Xve\DbExport\Config\ExportConfig;
 use Xve\DbExport\Contracts\ExporterInterface;
 use Xve\DbExport\DTOs\ExportResult;
@@ -12,12 +16,49 @@ use Xve\DbExport\Exceptions\ExportException;
 
 class ExecuteExportAction implements ExporterInterface
 {
+    protected ?ProgressBar $progressBar = null;
+
     public function __construct(
         protected BuildDumperAction $buildDumper,
         protected CompressExportAction $compress,
         protected WrapWithForeignKeysAction $wrapForeignKeys,
         protected ?ExportAnonymizedTableAction $exportAnonymized = null
     ) {}
+
+    protected function createOutput(): OutputInterface
+    {
+        if (app()->runningInConsole()) {
+            return new ConsoleOutput;
+        }
+
+        return new NullOutput;
+    }
+
+    protected function startProgress(int $totalSteps): void
+    {
+        $output = $this->createOutput();
+        $this->progressBar = new ProgressBar($output, $totalSteps);
+        $this->progressBar->setFormat(' %current%/%max% [%bar%] %percent:3s%% %message%');
+        $this->progressBar->setMessage('Starting export...');
+        $this->progressBar->start();
+    }
+
+    protected function advanceProgress(string $message): void
+    {
+        if ($this->progressBar instanceof ProgressBar) {
+            $this->progressBar->setMessage($message);
+            $this->progressBar->advance();
+        }
+    }
+
+    protected function finishProgress(): void
+    {
+        if ($this->progressBar instanceof ProgressBar) {
+            $this->progressBar->finish();
+            $this->createOutput()->writeln('');
+            $this->progressBar = null;
+        }
+    }
 
     /**
      * @param  array<TableInfo>  $tables
@@ -33,18 +74,25 @@ class ExecuteExportAction implements ExporterInterface
             $outputPath = $config->getFullPath();
             $tempPath = $this->getTempPath($outputPath);
 
+            $totalSteps = $this->calculateTotalSteps($config, $tables);
+            $this->startProgress($totalSteps);
+
             $this->executeDump($config, $tables, $tempPath);
 
             if ($config->disableForeignKeys) {
+                $this->advanceProgress('Wrapping with foreign key checks...');
                 $this->wrapForeignKeys->execute($tempPath);
             }
 
             if ($config->compress) {
+                $this->advanceProgress('Compressing export...');
                 $this->compress->execute($tempPath, $outputPath);
                 @unlink($tempPath);
             } else {
                 rename($tempPath, $outputPath);
             }
+
+            $this->finishProgress();
 
             $duration = microtime(true) - $startTime;
             $fileSize = file_exists($outputPath) ? (int) filesize($outputPath) : 0;
@@ -61,6 +109,7 @@ class ExecuteExportAction implements ExporterInterface
                 compressed: $config->compress
             );
         } catch (\Throwable $throwable) {
+            $this->finishProgress();
             $duration = microtime(true) - $startTime;
 
             throw ExportException::failed($throwable->getMessage(), $throwable, $duration);
@@ -89,6 +138,7 @@ class ExecuteExportAction implements ExporterInterface
 
         // Export non-anonymized tables with mysqldump
         if ($dataTables !== []) {
+            $this->advanceProgress('Dumping '.count($dataTables).' tables...');
             $dumper = $this->buildDumper->execute($config, $dataTables);
             $dumper->dumpToFile($outputPath);
         } else {
@@ -96,13 +146,15 @@ class ExecuteExportAction implements ExporterInterface
         }
 
         // Export anonymized tables via PHP
-        if ($anonymizedTables !== [] && $this->exportAnonymized instanceof \Xve\DbExport\Actions\Export\ExportAnonymizedTableAction) {
+        $anonymizer = $this->exportAnonymized;
+        if ($anonymizedTables !== [] && $anonymizer instanceof ExportAnonymizedTableAction) {
             $handle = fopen($outputPath, 'a');
             if ($handle !== false) {
                 fwrite($handle, "\n-- Anonymized tables\n");
 
                 foreach ($anonymizedTables as $table) {
-                    $this->exportAnonymized->execute($table->name, $config, $handle);
+                    $this->advanceProgress('Anonymizing '.$table->name.'...');
+                    $anonymizer->execute($table->name, $config, $handle);
                 }
 
                 fclose($handle);
@@ -113,6 +165,9 @@ class ExecuteExportAction implements ExporterInterface
         $structureDumper = $this->buildDumper->buildStructureOnlyDumper($config, $tables);
 
         if ($structureDumper instanceof \Spatie\DbDumper\Databases\MySql) {
+            $structureOnlyCount = count(array_filter($tables, fn (TableInfo $t): bool => $t->structureOnly));
+            $this->advanceProgress('Exporting '.$structureOnlyCount.' structure-only tables...');
+
             $structureTempPath = $outputPath.'.structure';
             $structureDumper->dumpToFile($structureTempPath);
 
@@ -120,6 +175,47 @@ class ExecuteExportAction implements ExporterInterface
             file_put_contents($outputPath, "\n\n-- Structure-only tables\n".$structureContent, FILE_APPEND);
             @unlink($structureTempPath);
         }
+    }
+
+    /**
+     * Calculate the total number of progress steps.
+     *
+     * @param  array<TableInfo>  $tables
+     */
+    protected function calculateTotalSteps(ExportConfig $config, array $tables): int
+    {
+        $anonymizedTableNames = array_keys($config->anonymize);
+        $steps = 0;
+
+        $dataTables = array_filter(
+            $tables,
+            fn (TableInfo $t): bool => ! $t->structureOnly && ! $t->isView && ! in_array($t->name, $anonymizedTableNames, true)
+        );
+
+        if ($dataTables !== []) {
+            $steps++; // mysqldump
+        }
+
+        // One step per anonymized table
+        $steps += count(array_filter(
+            $tables,
+            fn (TableInfo $t): bool => ! $t->structureOnly && ! $t->isView && in_array($t->name, $anonymizedTableNames, true)
+        ));
+
+        $hasStructureOnly = array_filter($tables, fn (TableInfo $t): bool => $t->structureOnly) !== [];
+        if ($hasStructureOnly) {
+            $steps++;
+        }
+
+        if ($config->disableForeignKeys) {
+            $steps++;
+        }
+
+        if ($config->compress) {
+            $steps++;
+        }
+
+        return $steps;
     }
 
     protected function ensureOutputDirectory(string $path): void

@@ -191,8 +191,6 @@ class ExportCommand extends Command
 
     protected function executeExport(DbExportManager $manager, ExportConfig $config): int
     {
-        $this->info('Starting export...');
-
         try {
             $result = $manager->export($config);
 
