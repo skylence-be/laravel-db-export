@@ -40,6 +40,7 @@ class ExportAnonymizedTableAction
         }
 
         fwrite($handle, "\n-- Anonymized data for table `{$table}`\n");
+        $this->writeCreateTable($connection, $table, $handle);
         fwrite($handle, "TRUNCATE TABLE `{$table}`;\n");
 
         $offset = 0;
@@ -127,6 +128,27 @@ class ExportAnonymizedTableAction
         );
 
         return sprintf("'%s'", $escaped);
+    }
+
+    /**
+     * Write the CREATE TABLE statement for the given table.
+     *
+     * @param  resource  $handle
+     */
+    protected function writeCreateTable(ConnectionInterface $connection, string $table, $handle): void
+    {
+        /** @var array<int, object> $result */
+        $result = $connection->select(sprintf('SHOW CREATE TABLE `%s`', $table));
+
+        if ($result !== []) {
+            $createSql = (array) $result[0];
+            $sql = $createSql['Create Table'] ?? '';
+
+            if ($sql !== '') {
+                fwrite($handle, "DROP TABLE IF EXISTS `{$table}`;\n");
+                fwrite($handle, $sql.";\n");
+            }
+        }
     }
 
     protected function getConnection(ExportConfig $config): ConnectionInterface
