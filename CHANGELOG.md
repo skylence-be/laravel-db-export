@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.2.2] - 2026-02-25
+
+### Fixed
+- Emit INSERT INTO header for every batch in anonymized table exports (tables with >1000 rows produced invalid SQL)
+
 ## [1.2.1] - 2026-02-25
 
 ### Fixed
